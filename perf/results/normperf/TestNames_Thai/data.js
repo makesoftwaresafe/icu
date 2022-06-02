@@ -1,6 +1,6 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1654027956203,
-  "repoUrl": "https://github.com/unicode-org/icu",
+  "lastUpdate": 1654206694080,
+  "repoUrl": "https://github.com/makesoftwaresafe/icu",
   "entries": {
     "Benchmark": [
       {
@@ -4438,6 +4438,66 @@ window.BENCHMARK_DATA = {
           {
             "name": "TestICU_NFD_Orig_Text",
             "value": 10.1741,
+            "unit": "ns/iter",
+            "biggerIsBetter": false
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "rizaziz2002@gmail.com",
+            "name": "Azizjon Rizayev",
+            "username": "rizaziz"
+          },
+          "committer": {
+            "email": "rizaziz2002@gmail.com",
+            "name": "Azizjon Rizayev",
+            "username": "rizaziz"
+          },
+          "distinct": true,
+          "id": "cdddb22c5846f3574ea00266ada64766bcf6b7e1",
+          "message": "Mayhem support",
+          "timestamp": "2022-06-01T11:00:31-04:00",
+          "tree_id": "6a9e2eb516eff200481ffdda8048c090f411034d",
+          "url": "https://github.com/makesoftwaresafe/icu/commit/cdddb22c5846f3574ea00266ada64766bcf6b7e1"
+        },
+        "date": 1654206691564,
+        "tool": "ndjson",
+        "benches": [
+          {
+            "name": "TestICU_NFC_NFD_Text",
+            "value": 10.8674,
+            "unit": "ns/iter",
+            "biggerIsBetter": false
+          },
+          {
+            "name": "TestICU_NFC_NFC_Text",
+            "value": 10.9435,
+            "unit": "ns/iter",
+            "biggerIsBetter": false
+          },
+          {
+            "name": "TestICU_NFC_Orig_Text",
+            "value": 10.5581,
+            "unit": "ns/iter",
+            "biggerIsBetter": false
+          },
+          {
+            "name": "TestICU_NFD_NFD_Text",
+            "value": 11.6513,
+            "unit": "ns/iter",
+            "biggerIsBetter": false
+          },
+          {
+            "name": "TestICU_NFD_NFC_Text",
+            "value": 11.2872,
+            "unit": "ns/iter",
+            "biggerIsBetter": false
+          },
+          {
+            "name": "TestICU_NFD_Orig_Text",
+            "value": 11.2724,
             "unit": "ns/iter",
             "biggerIsBetter": false
           }
