@@ -1,6 +1,6 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1654027911401,
-  "repoUrl": "https://github.com/unicode-org/icu",
+  "lastUpdate": 1654192949385,
+  "repoUrl": "https://github.com/makesoftwaresafe/icu",
   "entries": {
     "Benchmark": [
       {
@@ -3994,6 +3994,60 @@ window.BENCHMARK_DATA = {
           {
             "name": "TestIcu_BinarySearch_usekey",
             "value": 9910361.9304,
+            "unit": "ns/iter",
+            "biggerIsBetter": false
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "rizaziz2002@gmail.com",
+            "name": "Azizjon Rizayev",
+            "username": "rizaziz"
+          },
+          "committer": {
+            "email": "rizaziz2002@gmail.com",
+            "name": "Azizjon Rizayev",
+            "username": "rizaziz"
+          },
+          "distinct": true,
+          "id": "cdddb22c5846f3574ea00266ada64766bcf6b7e1",
+          "message": "Mayhem support",
+          "timestamp": "2022-06-01T11:00:31-04:00",
+          "tree_id": "6a9e2eb516eff200481ffdda8048c090f411034d",
+          "url": "https://github.com/makesoftwaresafe/icu/commit/cdddb22c5846f3574ea00266ada64766bcf6b7e1"
+        },
+        "date": 1654192946828,
+        "tool": "ndjson",
+        "benches": [
+          {
+            "name": "TestIcu_KeyGen_null",
+            "value": 308.4586,
+            "unit": "ns/iter",
+            "biggerIsBetter": false
+          },
+          {
+            "name": "TestIcu_qsort_strcoll_null",
+            "value": 27391015.5062,
+            "unit": "ns/iter",
+            "biggerIsBetter": false
+          },
+          {
+            "name": "TestIcu_qsort_usekey",
+            "value": 6483811.1321,
+            "unit": "ns/iter",
+            "biggerIsBetter": false
+          },
+          {
+            "name": "TestIcu_BinarySearch_strcoll_null",
+            "value": 26930922.6204,
+            "unit": "ns/iter",
+            "biggerIsBetter": false
+          },
+          {
+            "name": "TestIcu_BinarySearch_usekey",
+            "value": 7232680.6356,
             "unit": "ns/iter",
             "biggerIsBetter": false
           }
