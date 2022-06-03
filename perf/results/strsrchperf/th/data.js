@@ -1,6 +1,6 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1654027947440,
-  "repoUrl": "https://github.com/unicode-org/icu",
+  "lastUpdate": 1654215635635,
+  "repoUrl": "https://github.com/makesoftwaresafe/icu",
   "entries": {
     "Benchmark": [
       {
@@ -358,6 +358,42 @@ window.BENCHMARK_DATA = {
           {
             "name": "Test_ICU_Backward_Search",
             "value": 94.5822,
+            "unit": "ns/iter",
+            "biggerIsBetter": false
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "rizaziz2002@gmail.com",
+            "name": "Azizjon Rizayev",
+            "username": "rizaziz"
+          },
+          "committer": {
+            "email": "rizaziz2002@gmail.com",
+            "name": "Azizjon Rizayev",
+            "username": "rizaziz"
+          },
+          "distinct": true,
+          "id": "cdddb22c5846f3574ea00266ada64766bcf6b7e1",
+          "message": "Mayhem support",
+          "timestamp": "2022-06-01T11:00:31-04:00",
+          "tree_id": "6a9e2eb516eff200481ffdda8048c090f411034d",
+          "url": "https://github.com/makesoftwaresafe/icu/commit/cdddb22c5846f3574ea00266ada64766bcf6b7e1"
+        },
+        "date": 1654215631774,
+        "tool": "ndjson",
+        "benches": [
+          {
+            "name": "Test_ICU_Forward_Search",
+            "value": 39.9701,
+            "unit": "ns/iter",
+            "biggerIsBetter": false
+          },
+          {
+            "name": "Test_ICU_Backward_Search",
+            "value": 89.3332,
             "unit": "ns/iter",
             "biggerIsBetter": false
           }
