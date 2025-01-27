@@ -126,6 +126,37 @@ the UTF-8 signature byte sequence ("BOM").~~
 
 ## Clean up import statements
 
+### From command line
+
+This can be done from command line using the
+[Google Java Format](https://github.com/google/google-java-format) tool.
+
+**WARNING:** requires JDK 17 or newer (December 2024)
+
+Download the latest Google Java Format from Maven Central:
+```sh
+mvn dependency:copy -Dartifact=com.google.googlejavaformat:google-java-format:LATEST:jar:all-deps \
+    -DoutputDirectory=/tmp \
+    -Dmdep.stripVersion=true \
+    -q -ntp
+```
+
+Cleanup all Java files (only imports, nothing else):
+```sh
+find . -type f -name '*.java' | xargs java -jar /tmp/google-java-format-all-deps.jar -i --aosp --fix-imports-only --skip-sorting-imports
+```
+
+Remove the Google Java Format artifact from the temporary folder:
+```sh
+rm /tmp/google-java-format-all-deps.jar
+```
+
+You can (of course) download it from
+[GitHub Releases](https://github.com/google/google-java-format/releases). \
+Or save it in a personal tools folder and keep it around.
+
+### From Eclipse
+
 The Eclipse IDE provides a feature which allow you to organize import statements
 for multiple files. Right click on projects/source folders/files, you can select
 \[Source\] - \[Organize Imports\] which resolve all wildcard imports and sort
@@ -402,7 +433,7 @@ variations" because the test suites cannot be built like this, but the library
 code must support it.
 
 The simplest is to take an ICU4C workspace, modify uconfig.h *==temporarily==*
-by changing the value of UCONFIG_NO_CONVERSION to 1, and do "make -j 6" (not
+by changing the value of UCONFIG_NO_CONVERSION to 1, and do "make -j -l2.5" (not
 "make check" or "make tests"). Verify that the stubdata, common & i18n libraries
 build fine; layout should build too but toolutil will fail, that's expected.
 
@@ -421,7 +452,7 @@ Linux,
 
 ```sh
 ./runConfigureICU Linux CPPFLAGS="-DU_CHARSET_IS_UTF8=1"
-make -j6 check
+make -j -l2.5 check
 ```
 
 Any problems will show up as compilation or test errors.
@@ -447,7 +478,7 @@ show as build failures.
 ```sh
 CPPFLAGS="-DU_OVERRIDE_CXX_ALLOCATION=0" ./runConfigureICU Linux
 make clean
-make -j12 check
+make -j -l2.5 check
 ```
 
 ## ~~Test ICU_USE_THREADS=0 \[Obsolete\]~~
@@ -474,7 +505,7 @@ make check
 ## Test ICU4C Samples and Demos
 
 ### Windows build and test
-Note: Since ICU 73, this task has been included in the Azure DevOps Pipeline which is triggered automatically upon merging with main/maint* branches.
+Note: Since ICU 76, this task has been included in the GHA workflows which are triggered automatically upon merging with main/maint* branches.
 These instructions explain how to run the tests manually.
 
 To build the ICU4C samples on Windows with Visual Studio, use the following
@@ -541,8 +572,8 @@ demo.
 
 ```sh
 $ cd icu4j
-$ ant jarDemos
-$ java -jar icu4jdemos.jar
+$ mvn install -am -pl demos -DskipTests -DskipITs
+$ mvn exec:exec -pl demos
 ```
 
 Above command invokes GUI demo applications. As such it has to connect to a
@@ -561,16 +592,12 @@ ICU4J samples are located in directory <icu4j_root>/samples. Check that:
     
 To check ICU4J samples, you may use the command line to build and then run each:
 ```sh
-    $ cd icu4j/samples
-    $ ant build
-    
-    # Get the list of main samples to test.
-    $ grep -r main src/
-      src/com/ibm/icu/samples/text/dateintervalformat/DateIntervalFormatSample.java
-      ...
-    
-    # For each sample, execute as follows:
-    $ java -cp ../icu4j.jar:out/lib/icu4j-samples.jar com.ibm.icu.samples.text.dateintervalformat.DateIntervalFormatSample
+$ cd icu4j
+$ mvn install -am -pl samples -DskipTests -DskipITs
+
+# Get the list of samples with `main` methods, and execute to test.
+$ classes=`grep -r "void main" samples/src/ -l | ruby -lane 'file=$_; m = file.match(/src\/main\/java\/(.*)\.java$/); puts m[1];' | tr '/' '.'`
+$ for class in $classes; do echo $class; mvn exec:java -pl samples -Dexec.mainClass="$class"; echo "Press enter to continue"; read; done
 ```
     
 To use Eclipse, do the following:
@@ -590,14 +617,14 @@ To use Eclipse, do the following:
 For ICU4J,
 
 ```sh
-$ ant exhaustiveCheck
+$ mvn install -DICU.exhaustive=10
 ```
 
 For ICU4C, testing with an optimized build will help reduce the elapsed time
 required for the tests to complete.
 
 ```sh
-$ make -j6 check-exhaustive
+$ make -j -l2.5 check-exhaustive
 ```
 
 ---
@@ -609,7 +636,7 @@ tests. These instructions run the sanitizer on the entire test suite. The clang
 compiler is required.
 
 ```sh
-$ CPPFLAGS=-fsanitize=thread LDFLAGS=-fsanitize=thread ./runConfigureICU --enable-debug --disable-release Linux --disable-renaming
+$ CPPFLAGS=-fsanitize=thread LDFLAGS=-fsanitize=thread ./runConfigureICU --enable-debug --disable-release Linux/clang --disable-renaming
 $ make clean
-$ make -j6 check
+$ make -j -l2.5 check
 ```

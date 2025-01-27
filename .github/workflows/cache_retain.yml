@@ -26,23 +26,40 @@ on:
     # this cron schedule is set to run every 6 days to ensure retention
     - cron: '0 12 */6 * *'
 
+env:
+  SHARED_MVN_ARGS: '--show-version --no-transfer-progress'
+
+permissions:
+  contents: read
+
 jobs:
   retain-maven-cache:
     name: Run all tests with Maven
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04  # Updated in BRS
+    # Only run this on the upstream repo. Otherwise, running in a personal fork will cause
+    # Github to disable the personal fork copy of the workflow
+    # (Github complains about running a scheduled workflow on a repo with > 60 days of inactivity)
+    if: github.ref == 'refs/heads/main' && github.repository == 'unicode-org/unicodetools'
     steps:
       - name: Checkout and setup
-        uses: actions/checkout@v2
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
         with:
           lfs: true
       - name: Checkout lfs objects
         run: git lfs pull
-      - uses: actions/setup-java@v3
+      - uses: actions/setup-java@99b8673ff64fbf99d8d325f52d9a5bdedb8483e9 # v4.2.1
         with:
           distribution: 'temurin'
           java-version: '11'
-          cache: maven
+      - name: Restore read-only cache of local Maven repository
+        uses: actions/cache/restore@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
+        id: cache
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
       - name: Run Maven unit & integration tests
         run: |
-          cd icu4j/maven-build;
-          mvn --batch-mode verify
+          cd icu4j;
+          mvn ${SHARED_MVN_ARGS} verify

@@ -2,35 +2,37 @@
 
 Thank you for wanting to contribute to ICU!
 
+Starting with ICU 58, ICU is a project of the Unicode® Consortium and the ICU Project Management Committee is a Unicode Technical Committee, the ICU-TC. For more details, see [the Unicode announcement][unicode-announcement]. Since 2018-July, ICU is hosted on [GitHub][unicode-org/icu].
+
 ## Why contribute?
 
 ICU is an open source library that is a de-facto industry standard for internationalization libraries. Our goal is to provide top of the line i18n support on all widely used platforms. By contributing your code to the ICU library, you will get the benefit of continuing improvement by the ICU team and the community, as well as testing and multi-platform portability. In addition, it saves you from having to re-merge your own additions into ICU each time you upgrade to a new ICU release.
 
-## License
+## Contributor License Agreement
 
-Starting with ICU 58, ICU is a project of the Unicode® Consortium and the ICU Project Management Committee is a Unicode Technical Committee, the ICU-TC. ICU will continue to be released under the [Unicode open source license][unicode-license], which is similar to the old ICU license. For more details, see [the Unicode announcement][unicode-announcement].
+In order to contribute to this project, the Unicode Consortium must have on file a Contributor License Agreement (CLA) covering your contributions, either an individual or a corporate CLA. Pull Requests, issues, and other contributions will not be merged/accepted until the correct CLA is signed. Which version needs to be signed depends on who owns the contribution being made: you as the individual making the contribution or your employer. **It is your responsibility to determine whether your contribution is owned by your employer.** Please review the [Unicode Intellectual Property, Licensing, & Technical Contribution Policy][policies] for further guidance on which CLA to sign, as well as other information and guidelines regarding the Consortium’s licensing and technical contribution policies and procedures.
 
-Since 2018-July, ICU is hosted on GitHub.
+To sign the CLA in Github, open a Pull Request (a comment will be automatically added with a link to the CLA Form), or go directly to [the CLA Form][sign-cla]. You may need to sign in to Github to see the entire CLA Form.
 
-For patches, please submit both a Jira ticket and a GitHub pull request. See [Submitting ICU Bugs and Feature Requests][bugs].
+- **Individual CLA**: If you have determined that the Individual CLA is appropriate, then when you access the CLA Form, click the Individual CLA and complete the Form.
 
-For contributions — bug fix patches, one-time feature additions, or ongoing work as a team member — please sign the Unicode CLA. You are automatically asked to do so when you create a pull request for the first time. Signing it once per person or organization is sufficient for future contributions.
+- **Corporate CLA**: If you have determined that a Corporate CLA is appropriate, please first check the [public list of Corporate CLAs][unicode-corporate-clas] that the Consortium has on file. If your employer is listed, then when you access the CLA Form, you can click the box indicating that you are covered by your employer’s corporate CLA. If your employer is not on the list, then it has not already signed a CLA and you will need to arrange for your employer to do so before you contribute, as described in [How to Sign a Unicode CLA][signing].
 
- (As of 2018-Aug, the CLA assistant is not yet set up to recognize an organization affiliation, so individuals still have to sign it for now.)
+Unless otherwise noted in the [`LICENSE`](./LICENSE) file, this project is released under the [OSI-approved][osi-Unicode-License-3.0] free and open-source [Unicode License v3][unicode-license].
 
 ## Process
 
 See also [git for ICU Developers][git4icu].
 
-If you want to join the team, then please contact us. Once everything is agreed, the ICU team adds you to the GitHub project and the Jira issue tracker.
+If you want to join the team, then please [contact us][contacts]. Once everything is agreed, the ICU team adds you to the [GitHub project][unicode-org/icu] and the [Jira issue tracker][bugs].
 
 ## General Contribution Requirements
 
 We will be glad to take a look at the code you wish to contribute to ICU. We cannot guarantee that the code will be included. Contributions of general interest and written according to the following guidelines have a better chance of becoming a part of ICU.
 
-For any significant new functionality, contact the ICU development team through the icu-design mailing list first, and discuss the features, design and scope of the possible contribution. This helps ensure that the contribution is expected and will be welcome, that it will fit in well with the rest of ICU, and that it does not overlap with other development work that may be underway.
+For any significant new functionality, contact the ICU development team through the [icu-design][contacts] mailing list first, and discuss the features, design and scope of the possible contribution. This helps ensure that the contribution is expected and will be welcome, that it will fit in well with the rest of ICU, and that it does not overlap with other development work that may be underway.
 
-While you are considering contributing code to ICU, make sure that the legal terms (see [License](#license) above) are acceptable to you and your organization.
+While you are considering contributing code to ICU, make sure that the legal terms (see [Licenses](#licenses) above) are acceptable to you and your organization.
 
 Here are several things to keep in mind when developing a potential contribution to the ICU project:
 
@@ -78,10 +80,10 @@ We meet once a week by phone. See the [agenda & meeting minutes][meetings].
 
 ## Setup & Workflow
 
-- [Source Code Access][repository]
 - [git for ICU Developers][git4icu]
-- [Tips for developers][tips]
-- [Eclipse and other setup][setup]
+- [Setup for Contributors][setup]
+  - [Source Code Access][repository]
+  - [Tips for C++ Contributors][tips]
 - [Submitting ICU Bugs and Feature Requests][bugs]
 - [ICU Ticket Life cycle][ticket-lifecycle]
 
@@ -91,37 +93,41 @@ Significant/disruptive changes should be discussed on the icu-design list or on 
 
 Proposed changes will be discussed at the ICU meeting that follows at least six days later. Proposals are frequently modified during email and in-meeting discussion. Please do not "jump the gun" unless you are very confident your proposal will go through as-is, or be prepared to revert your changes.
 
-# Welcome
+## Welcome
 
 _… and thanks for contributing!_
 
-### License
+### Copyright & Licenses
 
-Please see [./LICENSE](./LICENSE)
+Copyright © 2016-2024 Unicode, Inc. Unicode and the Unicode Logo are registered trademarks of Unicode, Inc. in the United States and other countries.
 
-> Copyright © 2021 and later Unicode, Inc. and others. All Rights Reserved.
-Unicode and the Unicode Logo are registered trademarks
-of Unicode, Inc. in the U.S. and other countries.
-[Terms of Use and License](http://www.unicode.org/copyright.html)
+The project is released under [LICENSE](./LICENSE).
 
 
-[coding-guidelines]: docs/userguide/dev/codingguidelines.md
-[git4icu]: https://icu.unicode.org/repository/gitdev
-[unicode-license]: https://www.unicode.org/license.txt
-[unicode-announcement]: http://blog.unicode.org/2016/05/icu-joins-unicode-consortium.html
 [bugs]: https://icu.unicode.org/bugs
-[repository]: https://icu.unicode.org/repository
-[tips]: https://icu.unicode.org/repository/tips
-[setup]: https://icu.unicode.org/setup
-[ticket-lifecycle]: https://icu.unicode.org/processes/ticket-lifecycle
-[proposal-template]: https://icu.unicode.org/processes/proposal-template
+[cintltst]: ./icu4c/source/test/cintltst/
+[coding-guidelines]: docs/userguide/dev/codingguidelines.md
+[com.ibm.icu.dev.test]: ./icu4j/main/framework/src/test/java/com/ibm/icu/dev/test/
+[contacts]: https://icu.unicode.org/contacts
+[copyright]: http://www.unicode.org/copyright.html
+[design]: docs/userguide/icu/design.md
+[git4icu]: https://unicode-org.github.io/icu/userguide/dev/gitdev
+[howtouse]: docs/userguide/icu/howtouseicu.md
 [icu4c-api]: https://unicode-org.github.io/icu-docs/apidoc/released/icu4c/
 [icu4j-api]: https://unicode-org.github.io/icu-docs/apidoc/released/icu4j/
-[howtouse]: docs/userguide/icu/howtouseicu.md
-[design]: docs/userguide/icu/design.md
-[introduction]: docs/userguide/index.md
-[contacts]: https://icu.unicode.org/contacts
-[meetings]: https://icu.unicode.org/projectinfo/meetings
-[cintltst]: ./icu4c/source/test/cintltst/
 [intltest]: ./icu4c/source/test/intltest/
-[com.ibm.icu.dev.test]: ./icu4j/main/tests/framework/src/com/ibm/icu/dev/test/
+[introduction]: docs/userguide/index.md
+[meetings]: https://icu.unicode.org/projectinfo/meetings
+[osi-Unicode-License-3.0]: https://opensource.org/license/unicode-license-v3/
+[policies]: https://www.unicode.org/policies/licensing_policy.html
+[proposal-template]: https://icu.unicode.org/processes/proposal-template
+[repository]: https://unicode-org.github.io/icu/devsetup/source/
+[setup]: https://unicode-org.github.io/icu/devsetup/
+[sign-cla]: https://cla-assistant.io/unicode-org/.github
+[signing]: https://www.unicode.org/policies/licensing_policy.html#signing
+[ticket-lifecycle]: https://icu.unicode.org/processes/ticket-lifecycle
+[tips]: https://unicode-org.github.io/icu/devsetup/cpp/
+[unicode-announcement]: http://blog.unicode.org/2016/05/icu-joins-unicode-consortium.html
+[unicode-corporate-clas]: https://www.unicode.org/policies/corporate-cla-list/
+[unicode-license]: https://www.unicode.org/license.txt
+[unicode-org/icu]: https://github.com/unicode.org/icu

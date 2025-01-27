@@ -102,23 +102,23 @@ Use the GitHub GUI to create both the "release" and the "tag" at the same time:
 
 <https://github.com/unicode-org/icu/releases/new>
 
-Fill in the tag name, such as "release-63-rc" or "release-63-1", and make the
-target the "maint/maint-xx" branch (such as maint/maint-63).
-
-Set the title to "ICU 63 RC" or "ICU 63.1". Fill in the description using the
+1. Fill in the tag name, such as `release-63-rc` or `release-63-1`, and make the
+target the "maint/maint-xx" branch (such as `maint/maint-63`).
+1. Set the title to `ICU 63 RC` or `ICU 63.1`.
+1. Fill in the description using the
 text from the announcement email. (You can also look at previous releases and
 possibly re-use some of the generic text, such as links to the API docs, etc.)
-
-Your screen should look like this:
-
-![image](maint-63-rc-screenshot.png)
-
-For the release candidate tag, please check the box that says "Pre-Release".
-
-We no longer need to add the note about Git LFS files, as GitHub now includes
-them in the auto-generated .zip downloads.
-
-Click the "Publish Release" button to make the tag.
+1. Your screen should look like this:
+    ![image](maint-63-rc-screenshot.png)
+1. Check the box that says "Set as a pre-release".
+1. Click the "Publish Release" button to make the tag.
+1. Additional step only for the GA release:
+After completing the step above to mark the release as "pre-release",
+the second step is to wait for the day of the official announcement of the release,
+and then to edit the Github release entry's settings.
+    1.  The first Github release settings change should uncheck the "Set as a pre-release" checkbox,
+which has the effect of converting the release into  a regular release.
+    1. The next settings change should check the box that says "Set as the latest release".
 
 Note: The "latest" tag is no longer updated. It was agreed by the ICU-TC to be
 deleted around the 64.2 time-frame, as it doesn't work well with with Git. (You
@@ -126,6 +126,9 @@ need to force-push the new tag, and if somebody has already cloned the
 repository, they might have something different for the "latest" tag).
 A possible future alternative might be a sym-link folder, or HTTP redirect that
 points to the latest release.
+
+We no longer need to add the note about Git LFS files, as GitHub now includes
+them in the auto-generated .zip downloads.
 
 #### Maintenance release
 
@@ -238,15 +241,21 @@ Download Directories are located at, for example,
 corresponding to <http://download.icu-project.org/ex/files/icu4c/4.4.2/>
 Look at previous releases for an example.
 
-### Java Source/Bin:
+### Java Source/Bin
+
+**Post 76.1 see [Publish - Version 76.1](release.md)**
 
 Follow instructions here: [Building ICU4J Release Files](../release-build.md)
 
 ### C source/binary:
 
+**Post 76.1 see [Publish - Version 76.1](release.md)**
+
 <span style="background:yellow">***WORK IN PROGRESS***</a>
 
 #### Source and Linux Binaries:
+
+**Post 76.1 see [Publish - Version 76.1](release.md)**
 
 Important: this step works with Unix make + docker.
 
@@ -258,6 +267,7 @@ $ git clone https://github.com/unicode-org/icu-docker.git
 $ cd icu-docker/src
 $ git clone --branch release-64-rc --depth 1 https://github.com/unicode-org/icu.git
 $ cd icu
+$ git lfs install --local
 $ git lfs fetch
 $ git lfs checkout
 $ cd ../..
@@ -280,6 +290,9 @@ run \`make dist\`.
     local checkout. (Thus it will exclude any local uncommitted changes).
 
 #### Windows Binary:
+
+**Post 76.1 see [Publish - Version 76.1](release.md)** \
+That new flow overlaps with _"Using the output from the build bots"_ below.
 
 *   Manual process:
     *   Build with MSVC x64 Release. (See the ICU
@@ -305,36 +318,24 @@ run \`make dist\`.
     *   Click on the green check mark (✔) on the most recent/last commit. (It
         might be a red X if the builds failed, hopefully not).
         *   This will open up a pop-up with links to various CI builds.
-    *   Click on one of the various links that says "Details" for the Azure CI
-        builds.
+    *   Click on one of the various links that says "Details" for any of the GHA
+        builds and click on "Summary".
         *   This will open up the GitHub overview of the build status.<br>
-            ![image](azure-ci-builds.png)<br>
-    *   Click on the link "View more details on Azure Pipelines" link.
-        *   This will take you to the actual Azure CI build page.
-    *   On the top right of the page there should be a button titled
-        "Artifacts". Click this and it should show a drop-down with various ZIP
-        files that you can download.<br>
-        ![image](azure-ci-builds-artifacts.png)<br>
-    *   The ZIP may automatically download for you.
-    *   However, if you are signed-in to visualstudio.com then you might see a
-        dialog titled "Artifacts explorer".
-    *   In this case click on the name, then the "..." button to download the
-        zip file.<br>
-        ![image](azure-ci-builds-artifacts-download.png)<br>
-    *   Download both the x64 (64-bit) and x86 (32-bit) ZIP files.
+            ![image](gha-ci-summary.png)<br>
+    *   Scroll down at the bottom to find the sub-section "Artifacts". It should show you list of zips you can download<br>
+        ![image](gha-ci-artifacts.png)<br>
+    *   Download the x64, x86 and ARM zip files.
     *   For each architecture:
         *   Extract the Zip file. (It will have a name like
-            "20190829.6_ICU4C_MSVC_x64_Release.zip").
+            "icu4c.Win64.run_#104.zip").
         *   Navigate into the folder with the same name.
-        *   Rename the file "icu-windows.zip" to the appropriate name:
-            *   Ex: The x64 zip for version 64.1 was named
-                "icu4c-64_1-Win64-MSVC2017.zip"
-            *   Ex: The x86 zip for version 64.1 was named
-                "icu4c-64_1-Win32-MSVC2017.zip"
-            *   Note: Note: As of ICU 68, the pre-built binaries use MSVC2019
-                instead of MSVC2017.
+        *   Check and verify the names of the zip file are appropriate:
+            *   Ex: The x64 zip for version 76.1 should be named
+                "icu4c-76_1-Win64-MSVC2022.zip"
+            *   Ex: The x86 zip for version 76.1 should be named
+                "icu4c-76_1-Win32-MSVC2022.zip"
         *   Note: For RC releases the name looked like this:
-            "icu4c-64rc-Win64-MSVC2017.zip"
+            "icu4c-76rc-Win64-MSVC2022"
 *   ~~AIX Bin:~~ (AIX is broken and ignored for now.)
     *   ~~login to gcc119.fsffrance.org and copy the ICU4C source archive
         created above to there.~~
@@ -353,14 +354,18 @@ run \`make dist\`.
 
 #### Output of icuexportdata:
 
+**Post 76.1 see [Publish - Version 76.1](release.md)**
+
 This step publishes pre-processed Unicode property data, which may be ingested by downstream clients such as ICU4X.
 
 *   Using the output from the build bots:
-    *   Navigate to the Azure Pipeline `C: Create Artifacts from icuexportdata` and download its single artifact (`icuexportdata_output`)
+    *   Navigate to the GHA Workflow `icu4c-icuexportdata` and download the artifact (`icuexportdata_output`) from summary page
     *   Unzip the file
     *   Rename the `icuexportdata_tag-goes-here.zip` file to the correct tag (replacing slashes with dashes)
 
 ### Signing archives and creating checksums:
+
+**Post 76.1 see [Publish - Version 76.1](release.md)**
 
 #### Step 0. PGP keys:
 

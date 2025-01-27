@@ -111,10 +111,10 @@ Oracle JRE, you should go to the J2SE download page
 download the latest JDK DST Timezone Update Tool and apply the patch to your
 local JRE.
 
-To run the test case, you just need to invoke the ant target "jdktzCheck".
+To run the test case, you just need to invoke mvn verify goal with the special property as below.
 
 ```sh
-$ ant jdktzCheck
+$ mvn verify -Dcom.ibm.icu.util.TimeZone.DefaultTimeZoneType=JDK
 ```
 
 **Note:** You might not be able to get the update tool matching the tzdata
@@ -148,7 +148,7 @@ Using an in-source build on Linux:
 ```sh
 cd icu4c/source
 ./runConfigureICU Linux
-make -j2 check
+make -j -l2.5 check
 rm lib/libicudata.so*
 cp -P stubdata/libicudata.so* lib/
 cd test/intltest
@@ -241,7 +241,7 @@ see ticket [ICU-10636](https://unicode-org.atlassian.net/browse/ICU-10636).
 
 ### Run the tests with data-errors-as-warnings
 
-`INTLTEST_OPTS=-w CINTLTST_OPTS=-w make -j5 check`
+`INTLTEST_OPTS=-w CINTLTST_OPTS=-w make -j -l2.5 check`
 
 See that they pass, or fix them to pass. See ticket #10636 test code changes for
 examples.
@@ -263,7 +263,7 @@ based on the following instructions for ICU 64+.
     <code><b>ICU_DATA_BUILDTOOL_OPTS=--include_uni_core_data</b>
     ./runConfigureICU Linux</code> or similar
     *   Should be little-endian for coverage
-*   Clean and build ICU4C: `make -j6 check`
+*   Clean and build ICU4C: `make -j -l2.5 check`
 *   Make a clean directory for testing
     *   Find the .data file in the build output area, e.g.,
         `icu4c/source/data/out/tmp/icudt64l.dat`
@@ -431,9 +431,9 @@ To run manually, on a Linux system with clang,
 
 ```sh
 cd icu4c/source
-CPPFLAGS=-fsanitize=thread LDFLAGS=-fsanitize=thread ./runConfigureICU --enable-debug --disable-release Linux
+CPPFLAGS=-fsanitize=thread LDFLAGS=-fsanitize=thread ./runConfigureICU --enable-debug --disable-release Linux/clang
 make clean
-make -j6 check
+make -j -l2.5 check
 ```
 
 Errors are displayed at the point they occur, and stop further testing.
@@ -449,9 +449,9 @@ To run manually, on a Linux system with clang,
 
 ```sh
 cd icu4c/source
-CPPFLAGS=-fsanitize=address LDFLAGS=-fsanitize=address ./runConfigureICU --enable-debug --disable-release Linux
+CPPFLAGS=-fsanitize=address LDFLAGS=-fsanitize=address ./runConfigureICU --enable-debug --disable-release Linux/clang
 make clean
-make -j6 check
+make -j -l2.5 check
 ```
 
 Memory leaks are summarized at the end. Other errors are displayed at the point
@@ -467,12 +467,12 @@ version of ICU. When we prepare a new release, the serialization compatibility
 test data should be created and checked in for future testing. This task is
 usually done just before publishing release candidate.
 
-1.  Run regular ICU4J unit tests - `ant check`
-2.  Make sure the unit tests pass successfully.
-3.  Run - `ant serialTestData`
-4.  Copy a folder with ICU version (e.g. ICU_61.1) generated under <icu4j
-    root>/out/serialTestData to <icu4j
-    root>/main/tests/core/src/com/ibm/icu/dev/test/serializable/data.
+1.  Run regular ICU4J unit tests `mvn verify` and make sure all tests pass successfully.
+2.  Run `releases_tools/serial_test_data.sh` from `icu4j` directory.
+3.  The new ICU serialization test data folder with version number (e.g. `ICU_75.1`)
+is generated under `icu4j/target/serialTestData`. (**Note**: The version number in the output
+folder name comes from `ICU_VERSION` in `VersionInfo.java`. If the version number is still one
+for SNAPSHOT, such as `75.0.1`, you should update `ICU_VERSION` first.)
+4.  Copy the serialization data folder to `icu4j/main/core/src/test/resources/com/ibm/icu/dev/test/serializable/data`.
 5.  Delete the oldest serialization test data after ICU 3.6 (do not delete ICU_3.6) from the directory.
-    the oldest one - ICU_3.6).
-6.  Run `ant check` again before committing the changes.
+6.  Run regular ICU4J unit tests `mvn verify` again.

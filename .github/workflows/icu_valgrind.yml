@@ -11,12 +11,30 @@ on:
     branches:
       - main
       - 'maint/maint*'
+    paths:
+      - 'icu4c/**'
+      - 'testdata/**'
+      - '.github/workflows/**'
   pull_request:
     branches: '**'
+    paths:
+      - 'icu4c/**'
+      - 'testdata/**'
+      - '.github/workflows/**'
+
+# For non-release branches (namely: PRs), only run CI on the most recent commit. Cancel
+# runs on previous commits mid-flight when new commits are pushed.
+# https://docs.github.com/en/actions/using-jobs/using-concurrency#example-only-cancel-in-progress-jobs-on-specific-branches
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ !contains(github.ref, 'maint/') && github.ref != 'main' }}
+
+permissions:
+  contents: read
 
 jobs:
   clang-valgrind-test:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04  # Updated in BRS
     steps:
       - name: Install valgrind
         run: |
@@ -24,14 +42,16 @@ jobs:
           sudo apt-get -y update;
           sudo apt-get install -y valgrind;
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       - name: Build with debug enable
         env:
           CC: clang
+          CFLAGS: -gdwarf-4
           CXX: clang++
+          CXXFLAGS: -gdwarf-4
         run: |
           cd icu4c/source;
-          ./runConfigureICU --enable-debug Linux --disable-renaming && make -j tests;
+          ./runConfigureICU --enable-debug Linux --disable-renaming && make -j -l4.5 tests;
       - name: Test iotest with valgrind
         run: |
           cd icu4c/source/test/iotest
@@ -52,7 +72,7 @@ jobs:
               --show-reachable=yes ./icuinfo;
 
   clang-valgrind-intltest:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04  # Updated in BRS
     strategy:
       # "fail-fast: false" lets other jobs keep running even if the test breaks in some other test.
       fail-fast: false
@@ -67,14 +87,16 @@ jobs:
           sudo apt-get -y update;
           sudo apt-get install -y valgrind;
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       - name: Build with debug enable
         env:
           CC: clang
+          CFLAGS: -gdwarf-4
           CXX: clang++
+          CXXFLAGS: -gdwarf-4
         run: |
           cd icu4c/source;
-          ./runConfigureICU --enable-debug Linux --disable-renaming && make -j tests;
+          ./runConfigureICU --enable-debug Linux --disable-renaming && make -j -l4.5 tests;
       - name: Check all top path in intltest is covered
         run: |
           cd icu4c/source/test/intltest;
