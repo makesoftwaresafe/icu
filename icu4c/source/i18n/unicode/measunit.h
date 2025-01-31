@@ -33,11 +33,9 @@ U_NAMESPACE_BEGIN
 class StringEnumeration;
 class MeasureUnitImpl;
 
-namespace number {
-namespace impl {
+namespace number::impl {
 class LongNameHandler;
-}
-} // namespace number
+} // namespace number::impl
 
 /**
  * Enumeration for unit complexity. There are three levels:
@@ -107,13 +105,34 @@ typedef enum UMeasurePrefix {
      */
     UMEASURE_PREFIX_YOTTA = UMEASURE_PREFIX_ONE + 24,
 
+#ifndef U_HIDE_DRAFT_API
+    /**
+     * SI prefix: ronna, 10^27.
+     *
+     * @draft ICU 75
+     */
+    UMEASURE_PREFIX_RONNA = UMEASURE_PREFIX_ONE + 27,
+
+    /**
+     * SI prefix: quetta, 10^30.
+     *
+     * @draft ICU 75
+     */
+    UMEASURE_PREFIX_QUETTA = UMEASURE_PREFIX_ONE + 30,
+#endif  /* U_HIDE_DRAFT_API */
+
 #ifndef U_HIDE_INTERNAL_API
     /**
      * ICU use only.
      * Used to determine the set of base-10 SI prefixes.
      * @internal
      */
+#ifndef U_HIDE_DRAFT_API
+    UMEASURE_PREFIX_INTERNAL_MAX_SI = UMEASURE_PREFIX_QUETTA,
+#else  /* U_HIDE_DRAFT_API */
     UMEASURE_PREFIX_INTERNAL_MAX_SI = UMEASURE_PREFIX_YOTTA,
+#endif  /* U_HIDE_DRAFT_API */
+
 #endif  /* U_HIDE_INTERNAL_API */
 
     /**
@@ -249,13 +268,34 @@ typedef enum UMeasurePrefix {
      */
     UMEASURE_PREFIX_YOCTO = UMEASURE_PREFIX_ONE + -24,
 
+#ifndef U_HIDE_DRAFT_API
+    /**
+     * SI prefix: ronto, 10^-27.
+     *
+     * @draft ICU 75
+     */
+    UMEASURE_PREFIX_RONTO = UMEASURE_PREFIX_ONE + -27,
+
+    /**
+     * SI prefix: quecto, 10^-30.
+     *
+     * @draft ICU 75
+     */
+    UMEASURE_PREFIX_QUECTO = UMEASURE_PREFIX_ONE + -30,
+#endif  /* U_HIDE_DRAFT_API */
+
 #ifndef U_HIDE_INTERNAL_API
     /**
      * ICU use only.
      * Used to determine the set of base-10 SI prefixes.
      * @internal
      */
+#ifndef U_HIDE_DRAFT_API
+    UMEASURE_PREFIX_INTERNAL_MIN_SI = UMEASURE_PREFIX_QUECTO,
+#else  /* U_HIDE_DRAFT_API */
     UMEASURE_PREFIX_INTERNAL_MIN_SI = UMEASURE_PREFIX_YOCTO,
+#endif  /* U_HIDE_DRAFT_API */
+
 #endif  // U_HIDE_INTERNAL_API
 
     // Cannot conditionalize the following with #ifndef U_HIDE_INTERNAL_API,
@@ -371,7 +411,8 @@ class U_I18N_API MeasureUnit: public UObject {
 
     /**
      * Default constructor.
-     * Populates the instance with the base dimensionless unit.
+     * Populates the instance with the base dimensionless unit, which means that there will be
+     * no unit on the formatted number.
      * @stable ICU 3.0
      */
     MeasureUnit();
@@ -511,6 +552,44 @@ class U_I18N_API MeasureUnit: public UObject {
      */
     UMeasurePrefix getPrefix(UErrorCode& status) const;
 
+#ifndef U_HIDE_DRAFT_API
+
+    /**
+     * Creates a new MeasureUnit with a specified constant denominator.
+     *
+     * This method is applicable only to COMPOUND and SINGLE units. If invoked on a
+     * MIXED unit, an error will be set in the status.
+     *
+     * NOTE: If the constant denominator is set to 0, it means that you are removing
+     * the constant denominator.
+     *
+     * @param denominator The constant denominator to set.
+     * @param status Set if this is not a COMPOUND or SINGLE unit or if another error occurs.
+     * @return A new MeasureUnit with the specified constant denominator.
+     * @draft ICU 77
+     */
+    MeasureUnit withConstantDenominator(uint64_t denominator, UErrorCode &status) const;
+
+    /**
+     * Retrieves the constant denominator for this COMPOUND unit.
+     *
+     * Examples:
+     * - For the unit "liter-per-1000-kiloliter", the constant denominator is 1000.
+     * - For the unit "liter-per-kilometer", the constant denominator is zero.
+     *
+     * This method is applicable only to COMPOUND and SINGLE units. If invoked on
+     * a MIXED unit, an error will be set in the status.
+     *
+     * NOTE: If no constant denominator exists, the method returns 0.
+     *
+     * @param status Set if this is not a COMPOUND or SINGLE unit or if another error occurs.
+     * @return The value of the constant denominator.
+     * @draft ICU 77
+     */
+    uint64_t getConstantDenominator(UErrorCode &status) const;
+
+#endif /* U_HIDE_DRAFT_API */
+
     /**
      * Creates a MeasureUnit which is this SINGLE unit augmented with the specified dimensionality
      * (power). For example, if dimensionality is 2, the unit will be squared.
@@ -550,7 +629,9 @@ class U_I18N_API MeasureUnit: public UObject {
      * NOTE: Only works on SINGLE and COMPOUND units. If this is a MIXED unit, an error will
      * occur. For more information, see UMeasureUnitComplexity.
      *
-     * @param status Set if this is a MIXED unit or if another error occurs.
+     * NOTE: An Error will be returned for units that have a constant denominator.
+     *
+     * @param status Set if this is a MIXED unit, has a constant denominator or if another error occurs.
      * @return The reciprocal of the target unit.
      * @stable ICU 67
      */
@@ -585,6 +666,10 @@ class U_I18N_API MeasureUnit: public UObject {
      *   and "second".
      *
      * If this is a SINGLE unit, an array of length 1 will be returned.
+     *
+     * NOTE: For units with a constant denominator, the returned single units will
+     * not include the constant denominator. To obtain the constant denominator,
+     * retrieve it from the original unit.
      *
      * @param status Set if an error occurs.
      * @return A pair with the list of units as a LocalArray and the number of units in the list.
@@ -647,7 +732,7 @@ class U_I18N_API MeasureUnit: public UObject {
      * @return          The class ID for all objects of this class.
      * @stable ICU 53
      */
-    static UClassID U_EXPORT2 getStaticClassID(void);
+    static UClassID U_EXPORT2 getStaticClassID();
 
     /**
      * Returns a unique class ID POLYMORPHICALLY. Pure virtual override. This
@@ -660,7 +745,7 @@ class U_I18N_API MeasureUnit: public UObject {
      *                  other classes have different class IDs.
      * @stable ICU 53
      */
-    virtual UClassID getDynamicClassID(void) const override;
+    virtual UClassID getDynamicClassID() const override;
 
 #ifndef U_HIDE_INTERNAL_API
     /**
@@ -1529,21 +1614,37 @@ class U_I18N_API MeasureUnit: public UObject {
 
 #ifndef U_HIDE_DRAFT_API
     /**
+     * Returns by pointer, unit of duration: night.
+     * Caller owns returned value and must free it.
+     * Also see {@link #getNight()}.
+     * @param status ICU error code.
+     * @draft ICU 76
+     */
+    static MeasureUnit *createNight(UErrorCode &status);
+
+    /**
+     * Returns by value, unit of duration: night.
+     * Also see {@link #createNight()}.
+     * @draft ICU 76
+     */
+    static MeasureUnit getNight();
+#endif /* U_HIDE_DRAFT_API */
+
+    /**
      * Returns by pointer, unit of duration: quarter.
      * Caller owns returned value and must free it.
      * Also see {@link #getQuarter()}.
      * @param status ICU error code.
-     * @draft ICU 72
+     * @stable ICU 72
      */
     static MeasureUnit *createQuarter(UErrorCode &status);
 
     /**
      * Returns by value, unit of duration: quarter.
      * Also see {@link #createQuarter()}.
-     * @draft ICU 72
+     * @stable ICU 72
      */
     static MeasureUnit getQuarter();
-#endif /* U_HIDE_DRAFT_API */
 
     /**
      * Returns by pointer, unit of duration: second.
@@ -2586,30 +2687,6 @@ class U_I18N_API MeasureUnit: public UObject {
     static MeasureUnit getKilogram();
 
     /**
-     * Returns by pointer, unit of mass: metric-ton
-     * (renamed to tonne in CLDR 42 / ICU 72).
-     * Caller owns returned value and must free it.
-     * Note: In ICU 74 this will be deprecated in favor of
-     * createTonne(), which is currently draft but will
-     * become stable in ICU 74, and which uses the preferred naming.
-     * Also see {@link #getMetricTon()} and {@link #createTonne()}.
-     * @param status ICU error code.
-     * @stable ICU 54
-     */
-    static MeasureUnit *createMetricTon(UErrorCode &status);
-
-    /**
-     * Returns by value, unit of mass: metric-ton
-     * (renamed to tonne in CLDR 42 / ICU 72).
-     * Note: In ICU 74 this will be deprecated in favor of
-     * getTonne(), which is currently draft but will
-     * become stable in ICU 74, and which uses the preferred naming.
-     * Also see {@link #createMetricTon()} and {@link #getTonne()}.
-     * @stable ICU 64
-     */
-    static MeasureUnit getMetricTon();
-
-    /**
      * Returns by pointer, unit of mass: microgram.
      * Caller owns returned value and must free it.
      * Also see {@link #getMicrogram()}.
@@ -2737,23 +2814,45 @@ class U_I18N_API MeasureUnit: public UObject {
      */
     static MeasureUnit getTon();
 
-#ifndef U_HIDE_DRAFT_API
     /**
      * Returns by pointer, unit of mass: tonne.
      * Caller owns returned value and must free it.
      * Also see {@link #getTonne()}.
      * @param status ICU error code.
-     * @draft ICU 72
+     * @stable ICU 72
      */
     static MeasureUnit *createTonne(UErrorCode &status);
 
     /**
      * Returns by value, unit of mass: tonne.
      * Also see {@link #createTonne()}.
-     * @draft ICU 72
+     * @stable ICU 72
      */
     static MeasureUnit getTonne();
-#endif /* U_HIDE_DRAFT_API */
+
+    /**
+     * Returns by pointer, unit of mass: metric-ton
+     * (renamed to tonne in CLDR 42 / ICU 72).
+     * Caller owns returned value and must free it.
+     * Note: In ICU 74 this will be deprecated in favor of
+     * createTonne(), which is currently draft but will
+     * become stable in ICU 74, and which uses the preferred naming.
+     * Also see {@link #getMetricTon()} and {@link #createTonne()}.
+     * @param status ICU error code.
+     * @stable ICU 54
+     */
+    static MeasureUnit *createMetricTon(UErrorCode &status);
+
+    /**
+     * Returns by value, unit of mass: metric-ton
+     * (renamed to tonne in CLDR 42 / ICU 72).
+     * Note: In ICU 74 this will be deprecated in favor of
+     * getTonne(), which is currently draft but will
+     * become stable in ICU 74, and which uses the preferred naming.
+     * Also see {@link #createMetricTon()} and {@link #getTonne()}.
+     * @stable ICU 64
+     */
+    static MeasureUnit getMetricTon();
 
     /**
      * Returns by pointer, unit of power: gigawatt.
@@ -2884,6 +2983,22 @@ class U_I18N_API MeasureUnit: public UObject {
     static MeasureUnit getBar();
 
     /**
+     * Returns by pointer, unit of pressure: gasoline-energy-density.
+     * Caller owns returned value and must free it.
+     * Also see {@link #getGasolineEnergyDensity()}.
+     * @param status ICU error code.
+     * @stable ICU 74
+     */
+    static MeasureUnit *createGasolineEnergyDensity(UErrorCode &status);
+
+    /**
+     * Returns by value, unit of pressure: gasoline-energy-density.
+     * Also see {@link #createGasolineEnergyDensity()}.
+     * @stable ICU 74
+     */
+    static MeasureUnit getGasolineEnergyDensity();
+
+    /**
      * Returns by pointer, unit of pressure: hectopascal.
      * Caller owns returned value and must free it.
      * Also see {@link #getHectopascal()}.
@@ -3011,23 +3126,21 @@ class U_I18N_API MeasureUnit: public UObject {
      */
     static MeasureUnit getPoundPerSquareInch();
 
-#ifndef U_HIDE_DRAFT_API
     /**
      * Returns by pointer, unit of speed: beaufort.
      * Caller owns returned value and must free it.
      * Also see {@link #getBeaufort()}.
      * @param status ICU error code.
-     * @draft ICU 73
+     * @stable ICU 73
      */
     static MeasureUnit *createBeaufort(UErrorCode &status);
 
     /**
      * Returns by value, unit of speed: beaufort.
      * Also see {@link #createBeaufort()}.
-     * @draft ICU 73
+     * @stable ICU 73
      */
     static MeasureUnit getBeaufort();
-#endif /* U_HIDE_DRAFT_API */
 
     /**
      * Returns by pointer, unit of speed: kilometer-per-hour.
@@ -3060,6 +3173,24 @@ class U_I18N_API MeasureUnit: public UObject {
      * @stable ICU 64
      */
     static MeasureUnit getKnot();
+
+#ifndef U_HIDE_DRAFT_API
+    /**
+     * Returns by pointer, unit of speed: light-speed.
+     * Caller owns returned value and must free it.
+     * Also see {@link #getLightSpeed()}.
+     * @param status ICU error code.
+     * @draft ICU 76
+     */
+    static MeasureUnit *createLightSpeed(UErrorCode &status);
+
+    /**
+     * Returns by value, unit of speed: light-speed.
+     * Also see {@link #createLightSpeed()}.
+     * @draft ICU 76
+     */
+    static MeasureUnit getLightSpeed();
+#endif /* U_HIDE_DRAFT_API */
 
     /**
      * Returns by pointer, unit of speed: meter-per-second.
